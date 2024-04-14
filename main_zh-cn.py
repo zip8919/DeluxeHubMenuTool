@@ -1,8 +1,13 @@
+from PIL import Image
 import random
 import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 output_file = config.get('config','output_file')
+
+def open_image(file):
+    image = Image.open(file)
+    image.show()
 
 material = "book"
 slot = "0"
@@ -14,6 +19,7 @@ actions = "[command] say hi!"
 
 name = str((input("名称(用于DeluxeHub插件区分物品的名称-字符串): ") or "Name") + "_random-" + str(random.randint(10000, 99999)))
 material = str((input("显示的图标(物品的Minecraft命名空间ID-字符串): ")) or "book")
+open_image("slot_zh-cn.png")
 slot = str((input("槽位(物品在箱子界面内所在的位置-非负整数): ")) or "0")
 amount = str((input("数量(物品的数量-正整数): ")) or "1")
 glow = str((input("发光(物品是否有附魔发光效果-是'true'或否'false'): ")) or "true")

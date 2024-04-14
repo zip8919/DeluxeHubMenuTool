@@ -1,8 +1,13 @@
+from PIL import Image
 import random
 import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 output_file = config.get('config','output_file')
+
+def open_image(file):
+    image = Image.open(file)
+    image.show()
 
 material = "book"
 slot = "0"
@@ -14,6 +19,8 @@ actions = "[command] say hi!"
 
 name = str((input("Name(The name used to distinguish items in the DeluxeHub plugin-character string): ") or "Name") + "_random-" + str(random.randint(10000, 99999)))
 material = str((input("Material(The Minecraft Namespaced identifier of the item-character string): ")) or "book")
+Image.open("slot.png").show
+open_image("slot.png")
 slot = str((input("Slot(The location of the item within the box interface-nonnegative integer number): ")) or "0")
 amount = str((input("Amount(Quantity of items-positive integer number): ")) or "1")
 glow = str((input("Glow(Does the item have an enchanted glowing effect-true or false): ")) or "true")
