@@ -12,6 +12,11 @@ class message_zh_cn:
         self.save = "保存"
         self.saveto = "已经保存到"
         self.savesuccess = "保存成功"
+        self.nofound = "未找到"
+        self.info = "信息"
+        self.warn = "警告"
+        self.error = "错误"
+        self.initialization = "初始化完成"
         
     def message(self, name):
         return getattr(self, name, None)
@@ -30,6 +35,11 @@ class message_en_us:
         self.save = "save"
         self.saveto = "Save the file to "
         self.savesuccess = "Save successfully"
-        
+        self.nofound = "not found"
+        self.info = "Information"
+        self.warn = "warn"
+        self.error = "Error"
+        self.initialization = "Initialization complete"
+
     def message(self, name):
         return getattr(self, name, None)

@@ -1,11 +1,21 @@
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import ttk
 import random
 import configparser
 import time
 import importlib
 from PIL import Image
+from functions import functions
+from functools import partial
 
+CONFIG = """[config]
+output_file=menu.yml
+language=zh_cn"""
+
+functions = functions()
+if functions.check_file("config.ini") == False:
+    functions.crete("config.ini", CONFIG)
 config = configparser.ConfigParser()
 config.read('config.ini')
 output_file = config.get('config', 'output_file')
@@ -16,16 +26,13 @@ lang = class_obj()
 
 #打开图片
 def open_image(file):
-    image = Image.open(file)
-    image.show()
+    if functions.check_file(file) == False:
+        messagebox.showwarning(lang.message("warn"), file + lang.message("nofound"))
+    else:
+        image = Image.open(file)
+        image.show()
 
-    
 def window():
-    #增加窗口宽度
-    def increase_width():
-        current_height = root.winfo_height()
-        new_height = current_height + 22
-        root.geometry(f"{root.winfo_width()}x{new_height}")
     #保存
     def save_to_file():
         name = name_entry.get() + "_random-" + str(random.randint(10000, 99999))
@@ -38,7 +45,7 @@ def window():
         lore = "\n".join(["      - '" + line.strip() + "'" for line in lore.splitlines() if line.strip()])
         actions = actions_text.get("1.0", "end-1c")
         actions = "\n".join(["      - '" + line.strip() + "'" for line in actions.splitlines() if line.strip()])
- 
+    
         output = f"""
   {name}:
     material: {material}
@@ -53,11 +60,22 @@ def window():
 
         with open(output_file, 'a', encoding='utf-8') as f:
             f.write(output)
-
-        label = tk.Label(root, text="[" + time.strftime('%H:%M:%S', time.localtime()) + "]" +lang.message("saveto") + output_file)
-        label.pack()
         messagebox.showinfo((lang.message("savesuccess")), ("[" + time.strftime('%H:%M:%S', time.localtime()) + "]" +lang.message("saveto") + output_file))
-        increase_width()
+    def get_cursor_position():
+        focused_element = root.focus_get()
+        if focused_element:
+            cursor_position = focused_element.index(tk.INSERT)
+            print("光标所在元素：", focused_element)
+            print("光标位置：", cursor_position)
+            return(focused_element)
+        else:
+            print("没有元素拥有焦点")
+    def insert_text(text_widget, selected_text):
+        text_widget.insert(tk.INSERT, selected_text)
+
+    def on_button_click(text_widget, combobox):
+        selected_text = combobox.get()
+        insert_text(text_widget, selected_text) 
 
     # 创建窗口
     root = tk.Tk()
@@ -97,6 +115,15 @@ def window():
     actions_text = tk.Text(root, height=5, width=30)
     actions_text.pack()
 
+    # 创建下拉框
+    values = ["Option 1", "Option 2", "Option 3"]
+    combobox = ttk.Combobox(root, values=values)
+    combobox.pack()
+
+    # 创建按钮，用于在下拉框当前位置插入选中的文本
+    insert_button = tk.Button(root, text="Insert Text", command=partial(on_button_click, get_cursor_position(), combobox))
+    insert_button.pack()
+
     #保存按钮
     save_button = tk.Button(root, text=lang.message("save"), command=save_to_file)
     save_button.pack()
@@ -105,7 +132,7 @@ def window():
     open_image(f"_internal/slot_{language}.png")
     #显示窗口
     root.mainloop()
-    
+
 def main():
     window()
 
