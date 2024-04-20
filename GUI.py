@@ -35,12 +35,12 @@ def open_image(file):
 def window():
     #保存
     def save_to_file():
-        name = name_entry.get() + "_random-" + str(random.randint(10000, 99999))
-        material = material_entry.get()
-        slot = slot_entry.get()
-        amount = amount_entry.get()
-        glow = glow_var.get()
-        display_name = display_name_entry.get()
+        name = name_entry.get() + "_random-" + str(random.randint(10000, 99999)) or "name" + str(random.randint(10000, 99999))
+        material = material_entry.get() or "book"
+        slot = slot_entry.get() or "0"
+        amount = amount_entry.get() or "1"
+        glow = glow_var.get() or "true"
+        display_name = display_name_entry.get() or "display name"
         lore = lore_text.get("1.0", "end-1c")
         lore = "\n".join(["      - '" + line.strip() + "'" for line in lore.splitlines() if line.strip()])
         actions = actions_text.get("1.0", "end-1c")
@@ -61,22 +61,7 @@ def window():
         with open(output_file, 'a', encoding='utf-8') as f:
             f.write(output)
         messagebox.showinfo((lang.message("savesuccess")), ("[" + time.strftime('%H:%M:%S', time.localtime()) + "]" +lang.message("saveto") + output_file))
-    def get_cursor_position():
-        focused_element = root.focus_get()
-        if focused_element:
-            cursor_position = focused_element.index(tk.INSERT)
-            print("光标所在元素：", focused_element)
-            print("光标位置：", cursor_position)
-            return(focused_element)
-        else:
-            print("没有元素拥有焦点")
-    def insert_text(text_widget, selected_text):
-        text_widget.insert(tk.INSERT, selected_text)
-
-    def on_button_click(text_widget, combobox):
-        selected_text = combobox.get()
-        insert_text(text_widget, selected_text) 
-
+        
     # 创建窗口
     root = tk.Tk()
     root.title(lang.message("title"))
@@ -115,14 +100,6 @@ def window():
     actions_text = tk.Text(root, height=5, width=30)
     actions_text.pack()
 
-    # 创建下拉框
-    values = ["Option 1", "Option 2", "Option 3"]
-    combobox = ttk.Combobox(root, values=values)
-    combobox.pack()
-
-    # 创建按钮，用于在下拉框当前位置插入选中的文本
-    insert_button = tk.Button(root, text="Insert Text", command=partial(on_button_click, get_cursor_position(), combobox))
-    insert_button.pack()
 
     #保存按钮
     save_button = tk.Button(root, text=lang.message("save"), command=save_to_file)
